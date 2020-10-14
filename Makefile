@@ -6,7 +6,7 @@
 #    By: amalliar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/09 23:55:29 by amalliar          #+#    #+#              #
-#    Updated: 2020/10/09 22:21:00 by amalliar         ###   ########.fr        #
+#    Updated: 2020/10/14 04:43:55 by amalliar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,19 +17,16 @@ CFLAGS     := -Wall -Wextra -fdiagnostics-color -g -pipe
 INCLUDE    := -I./include
 AR         := ar -rcs
 NAME       := libasm.a
+SRCDIR     := src
 OBJDIR     := .obj
-DEPDIR     := .dep
 
-SRCS       := src/ft_strlen.s
-OBJS       := $(SRCS:%.c=$(OBJDIR)/%.o)
-DEPS       := $(SRCS:%.c=$(DEPDIR)/%.d)
+SRCS       := src/ft_strlen.s \
+              src/ft_strcpy.s \
+              src/ft_strcmp.s
+OBJS       := $(SRCS:$(SRCDIR)/%.s=$(OBJDIR)/%.o)
 
 # Run multiple threads.
 MAKEFLAGS  := -j 4 --output-sync=recurse --no-print-directory
-
-# Protect against make incorrectly setting 'last modified' attribute 
-# when running in parallel (-j flag).
-POST_COMPILE = mv -f $(DEPDIR)/$*.tmp $(DEPDIR)/$*.d && touch $@
 
 # Define some colors for echo:
 LGREEN     := \033[1;32m
@@ -43,21 +40,14 @@ $(NAME): $(OBJS)
 	@echo "Built target $(NAME)"
 .PHONY: all
 
-$(OBJDIR)/%.o: %.s $(DEPDIR)/%.d | $(OBJDIR) $(DEPDIR)
-	$(ASM) -MMD -MF $(DEPDIR)/$*.tmp -c -o $@ $<
-	@$(POST_COMPILE)
+$(OBJDIR)/%.o: $(SRCDIR)/%.s | $(OBJDIR)
+	$(ASM) -fmacho64 -o $@ $<
 $(OBJDIR):
 	@mkdir -p $(OBJDIR)
-$(DEPDIR):
-	@mkdir -p $(DEPDIR)
-$(DEPDIR)/%.d: ;
-.PRECIOUS: $(DEPDIR)/%.d
 
 clean:
 	@echo "$(WHITE)Removing object files...$(NOC)"
 	@-rm -rf $(OBJDIR)
-	@echo "$(WHITE)Removing dependency files...$(NOC)"
-	@-rm -rf $(DEPDIR)
 .PHONY: clean
 
 fclean: clean
@@ -74,8 +64,8 @@ test: $(NAME)
 	@echo "$(LGREEN)Building test executable...$(NOC)"
 	@$(CC) $(CFLAGS) $(INCLUDE) -L. -lasm src/test.c -o test
 	@echo "Built target test"
-	@echo "> start"
-	@./test && echo "> done"
+	@echo "> start\n"
+	@./test && echo "\n> done"
 	@rm -f test
 .PHONY: test
 
@@ -87,9 +77,3 @@ help:
 	@echo "... re"
 	@echo "... test"
 .PHONY: help
-
-# Do not include dependency files if the current goal is
-# set to clean/fclean/re.
-ifeq ($(findstring $(MAKECMDGOALS), clean fclean re),)
-    -include $(DEPS)
-endif
