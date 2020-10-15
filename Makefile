@@ -6,7 +6,7 @@
 #    By: amalliar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/09 23:55:29 by amalliar          #+#    #+#              #
-#    Updated: 2020/10/16 00:39:58 by amalliar         ###   ########.fr        #
+#    Updated: 2020/10/16 02:16:43 by amalliar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,8 @@ SRCS       := src/ft_strlen.s \
               src/ft_strcpy.s \
               src/ft_strcmp.s \
               src/ft_write.s \
-              src/ft_read.s
+              src/ft_read.s \
+              src/ft_strdup.s
 OBJS       := $(SRCS:$(SRCDIR)/%.s=$(OBJDIR)/%.o)
 
 # Run multiple threads.
@@ -64,7 +65,7 @@ re:
 
 test: $(NAME)
 	@echo "$(LGREEN)Building test executable...$(NOC)"
-	@$(CC) $(CFLAGS) $(INCLUDE) -L. -lasm src/test.c -o test
+	@$(CC) $(CFLAGS) $(INCLUDE) -L. -lasm src/main.c -o test
 	@echo "Built target test"
 	@echo "> start\n"
 	@./test && echo "\n> done"

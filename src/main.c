@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 22:06:40 by amalliar          #+#    #+#             */
-/*   Updated: 2020/10/16 00:46:54 by amalliar         ###   ########.fr       */
+/*   Updated: 2020/10/16 02:21:23 by amalliar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	test_ft_strcpy(void);
 void	test_ft_strcmp(void);
 void	test_ft_write(void);
 void	test_ft_read(void);
+void	test_ft_strdup(void);
 
 int		main(void)
 {
@@ -37,6 +38,7 @@ int		main(void)
 	test_ft_strcmp();
 	test_ft_write();
 	test_ft_read();
+	test_ft_strdup();
 	return (0);
 }
 
@@ -65,11 +67,12 @@ void	test_ft_strlen(void)
 
 void	gen_cstring(char *buff, int size)
 {
-	int		i;
+	int		len;
 
-	for (i = 0; i < rand() % size; ++i)
+	len = rand() % size;
+	for (int i = 0; i < len; ++i)
 		buff[i] = rand() % 255 + 1;
-	buff[i] = '\0';
+	buff[len] = '\0';
 }
 
 void	test_ft_strcpy(void)
@@ -178,7 +181,7 @@ void	test_ft_read(void)
 	printf("\nft_read, random tests:\n");
 	for (int i = 0; i < 80; ++i)
 	{
-		assert(read(fd1, buff1, 8 * i) == ft_read(fd2, buff2, 8 * i));
+		assert(read(fd1, buff1, i) == ft_read(fd2, buff2, i));
 		assert(!memcmp(buff1, buff2, 128));
 		printf(LGREEN"+"NOC);
 	}
@@ -200,4 +203,23 @@ void	test_ft_read(void)
 	close(fd1);
 	free(buff1);
 	free(buff2);
+}
+
+void	test_ft_strdup(void)
+{
+	char	*src;
+	char	*copy;
+
+	if (!(src = malloc(256)))
+		exit(EXIT_FAILURE);
+	printf("\nft_strdup, random tests:\n");
+	for (int i = 0; i < 80; ++i)
+	{
+		gen_cstring(src, 256);
+		copy = ft_strdup(src);
+		assert(!strcmp(src, copy));
+		free(copy);
+		printf(LGREEN"+"NOC);
+	}
+	printf("\n");
 }
