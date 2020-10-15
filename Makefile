@@ -6,7 +6,7 @@
 #    By: amalliar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/09 23:55:29 by amalliar          #+#    #+#              #
-#    Updated: 2020/10/14 04:43:55 by amalliar         ###   ########.fr        #
+#    Updated: 2020/10/16 00:39:58 by amalliar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,9 @@ OBJDIR     := .obj
 
 SRCS       := src/ft_strlen.s \
               src/ft_strcpy.s \
-              src/ft_strcmp.s
+              src/ft_strcmp.s \
+              src/ft_write.s \
+              src/ft_read.s
 OBJS       := $(SRCS:$(SRCDIR)/%.s=$(OBJDIR)/%.o)
 
 # Run multiple threads.

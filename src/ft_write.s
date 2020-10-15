@@ -1,23 +1,28 @@
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
 ;;                                                                            ;;
 ;;                                                        :::      ::::::::   ;;
-;;   ft_strlen.s                                        :+:      :+:    :+:   ;;
+;;   ft_write.s                                         :+:      :+:    :+:   ;;
 ;;                                                    +:+ +:+         +:+     ;;
 ;;   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        ;;
 ;;                                                +#+#+#+#+#+   +#+           ;;
-;;   Created: 2020/10/13 05:43:23 by amalliar          #+#    #+#             ;;
-;;   Updated: 2020/10/15 06:54:02 by amalliar         ###   ########.fr       ;;
+;;   Created: 2020/10/15 02:51:48 by amalliar          #+#    #+#             ;;
+;;   Updated: 2020/10/15 09:39:37 by amalliar         ###   ########.fr       ;;
 ;;                                                                            ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
 
 	section	.text
-	global	_ft_strlen
-_ft_strlen:
-	xor	rax, rax		; set rax to 0
-.loop:
-	cmp	byte [rdi + rax], 0	; check whether the null-terminator is reached
-	je	.break			; null-terminator found
-	inc	rax			; increment total string length
-	jmp	.loop			; test next byte
-.break:
+	global	_ft_write
+	extern	___error
+_ft_write:
+	mov	rax, 0x2000004		; write syscall
+	syscall
+	jnc	.done			; syscall errors set CF flag
+
+	push	rax			; save errno value + align rsp
+	call	___error		; get errno variable location
+	pop	rdx			; restore errno value
+	mov	dword [rax], edx	; set errno value
+	xor	rax, rax		; set rax to -1 to indicate an error
+	dec	rax
+.done:
 	ret

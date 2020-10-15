@@ -6,7 +6,7 @@
 ;;   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        ;;
 ;;                                                +#+#+#+#+#+   +#+           ;;
 ;;   Created: 2020/10/13 23:21:02 by amalliar          #+#    #+#             ;;
-;;   Updated: 2020/10/14 03:58:25 by amalliar         ###   ########.fr       ;;
+;;   Updated: 2020/10/16 00:25:37 by amalliar         ###   ########.fr       ;;
 ;;                                                                            ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
 
@@ -23,7 +23,7 @@ _ft_strcmp:
 	test	al, al			; check whether one of the strings has ended
 	jnz	.loop
 .break:
-	movsx	eax, al			; sign-extend al to eax
-	movsx	edx, byte [rsi + rcx]	; sign-extend last checked byte from second string
+	movzx	eax, al			; zero-extend al to eax
+	movzx	edx, byte [rsi + rcx]	; zero-extend last checked byte from second string
 	sub	eax, edx		; calculate the difference
 	ret
