@@ -6,7 +6,7 @@
 /*   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 22:06:40 by amalliar          #+#    #+#             */
-/*   Updated: 2020/10/16 02:21:23 by amalliar         ###   ########.fr       */
+/*   Updated: 2020/10/17 08:07:19 by amalliar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@ void	test_ft_strcmp(void);
 void	test_ft_write(void);
 void	test_ft_read(void);
 void	test_ft_strdup(void);
+void	test_ft_strchr(void);
+void	test_ft_strisunique(void);
+void	test_ft_atoi_base(void);
 
 int		main(void)
 {
@@ -39,6 +42,13 @@ int		main(void)
 	test_ft_write();
 	test_ft_read();
 	test_ft_strdup();
+
+#ifdef TEST_BONUS_PART
+	test_ft_strchr();
+	test_ft_strisunique();
+	test_ft_atoi_base();
+#endif
+
 	return (0);
 }
 
@@ -223,3 +233,101 @@ void	test_ft_strdup(void)
 	}
 	printf("\n");
 }
+
+#ifdef TEST_BONUS_PART
+
+void	test_ft_strchr(void)
+{
+	char	*str;
+	char	c;
+
+	if (!(str = malloc(256)))
+		exit(EXIT_FAILURE);
+	printf("\nft_strchr, random tests:\n");
+	for (int i = 0; i < 80; ++i)
+	{
+		c = rand() % 256;
+		gen_cstring(str, 256);
+		assert(strchr(str, c) == ft_strchr(str, c));
+		printf(LGREEN"+"NOC);
+	}
+	free(str);
+	printf("\nft_strchr, null-terminator test:\n");
+	assert(strchr("just some text...", 0) == ft_strchr("just some text...", 0));
+	printf(LGREEN"+"NOC"\n");
+}
+
+void	test_ft_strisunique(void)
+{
+	printf("\nft_strisunique, functional tests:\n");
+	assert(ft_strisunique("abcdefghijkl") == 1);
+	printf(LGREEN"+"NOC);
+	assert(ft_strisunique("") == 1);
+	printf(LGREEN"+"NOC);
+	assert(ft_strisunique("aAbBcC") == 1);
+	printf(LGREEN"+"NOC);
+	assert(ft_strisunique("abcida") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_strisunique("albÿiw") == 1);
+	printf(LGREEN"+"NOC);
+	assert(ft_strisunique("albÿiwÿ") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_strisunique("aldiwkÿsdÿ") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_strisunique("\t‰~þ") == 1);
+	printf(LGREEN"+"NOC"\n");
+}
+
+void	test_ft_atoi_base(void)
+{
+	int		num;
+	int		base;
+	char	*buff;
+	char	*base8 = "01234567";
+	char	*base10 = "0123456789";
+	char	*base16 = "0123456789abcdef";
+
+	printf("\nft_atoi_base, error handling:\n");
+	assert(ft_atoi_base("", "0123456789") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("255", "") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("255", "2") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("1012", "01") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("101", "001") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("101", "01+") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("101", "01-") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("2147483648", "0123456789") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("-2147483649", "0123456789") == 0);
+	printf(LGREEN"+"NOC);
+	printf("\nft_atoi_base, random tests:\n");
+	if (!(buff = malloc(64)))
+		exit(EXIT_FAILURE);
+	for (int i = 0; i < 80; ++i)
+	{
+		num = rand();
+		base = (num % 2) ? 16 : (num % 3) ? 8 : 10;
+		if (num % 20)
+			num = 0;
+		if (base == 10)
+			num = -num;
+		snprintf(buff, 64, (base == 16) ? "%x" : (base == 8) ? "%o" : "%+d", num);
+		if (base == 8)
+			assert(ft_atoi_base(buff, base8) == num);
+		else if (base == 10)
+			assert(ft_atoi_base(buff, base10) == num);
+		else if (base == 16)
+			assert(ft_atoi_base(buff, base16) == num);
+		printf(LGREEN"+"NOC);
+	}
+	printf("\n");
+	free(buff);
+}
+
+#endif
