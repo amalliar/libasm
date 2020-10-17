@@ -6,7 +6,7 @@
 /*   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 22:06:40 by amalliar          #+#    #+#             */
-/*   Updated: 2020/10/17 08:07:19 by amalliar         ###   ########.fr       */
+/*   Updated: 2020/10/17 09:21:14 by amalliar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	test_ft_strdup(void);
 void	test_ft_strchr(void);
 void	test_ft_strisunique(void);
 void	test_ft_atoi_base(void);
+void	test_ft_list_push_front(void);
 
 int		main(void)
 {
@@ -47,6 +48,7 @@ int		main(void)
 	test_ft_strchr();
 	test_ft_strisunique();
 	test_ft_atoi_base();
+	test_ft_list_push_front();
 #endif
 
 	return (0);
@@ -328,6 +330,33 @@ void	test_ft_atoi_base(void)
 	}
 	printf("\n");
 	free(buff);
+}
+
+void	test_ft_list_push_front(void)
+{
+	t_list	*lst;
+
+	printf("\nft_list_push_front, functional tests:\n");
+	ft_list_push_front(&lst, "[0]: First line...\n");
+	ft_list_push_front(&lst, "[1]: Second line...\n");
+	ft_list_push_front(&lst, "[2]: Third line...\n");
+	ft_list_push_front(&lst, "[3]: Fourth line...\n");
+	ft_list_push_front(&lst, "[4]: Fifth line...\n");
+	assert(!strcmp(lst->data, "[4]: Fifth line...\n"));
+	printf(LGREEN"+"NOC);
+	assert(!strcmp(lst->next->data, "[3]: Fourth line...\n"));
+	printf(LGREEN"+"NOC);
+	assert(!strcmp(lst->next->next->data, "[2]: Third line...\n"));
+	printf(LGREEN"+"NOC);
+	assert(!strcmp(lst->next->next->next->data, "[1]: Second line...\n"));
+	printf(LGREEN"+"NOC);
+	assert(!strcmp(lst->next->next->next->next->data, "[0]: First line...\n"));
+	printf(LGREEN"+"NOC"\n");
+	free(lst->next->next->next->next);
+	free(lst->next->next->next);
+	free(lst->next->next);
+	free(lst->next);
+	free(lst);
 }
 
 #endif
