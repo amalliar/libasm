@@ -6,7 +6,7 @@
 #    By: amalliar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/09 23:55:29 by amalliar          #+#    #+#              #
-#    Updated: 2020/10/17 09:21:54 by amalliar         ###   ########.fr        #
+#    Updated: 2020/10/17 09:44:52 by amalliar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,8 @@ BSRCS      := src/ft_strchr_bonus.s \
               src/ft_strisunique_bonus.s \
               src/ft_atoi_base_bonus.s \
               src/ft_create_elem_bonus.s \
-              src/ft_list_push_front_bonus.s
+              src/ft_list_push_front_bonus.s \
+              src/ft_list_size_bonus.s
 BOBJS      := $(BSRCS:$(SRCDIR)/%.s=$(OBJDIR)/%.o)
 
 # Run multiple threads.

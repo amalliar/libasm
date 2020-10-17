@@ -6,7 +6,7 @@
 /*   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/17 09:08:53 by amalliar          #+#    #+#             */
-/*   Updated: 2020/10/17 09:10:25 by amalliar         ###   ########.fr       */
+/*   Updated: 2020/10/17 09:44:21 by amalliar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,6 @@ typedef struct		s_list
 
 t_list				*ft_create_elem(void *data);
 void				ft_list_push_front(t_list **begin_list, void *data);
+int					ft_list_size(t_list *begin_list);
 
 #endif

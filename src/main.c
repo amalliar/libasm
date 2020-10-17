@@ -6,7 +6,7 @@
 /*   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 22:06:40 by amalliar          #+#    #+#             */
-/*   Updated: 2020/10/17 09:21:14 by amalliar         ###   ########.fr       */
+/*   Updated: 2020/10/17 09:48:30 by amalliar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	test_ft_strchr(void);
 void	test_ft_strisunique(void);
 void	test_ft_atoi_base(void);
 void	test_ft_list_push_front(void);
+void	test_ft_list_size(void);
 
 int		main(void)
 {
@@ -49,6 +50,7 @@ int		main(void)
 	test_ft_strisunique();
 	test_ft_atoi_base();
 	test_ft_list_push_front();
+	test_ft_list_size();
 #endif
 
 	return (0);
@@ -351,6 +353,35 @@ void	test_ft_list_push_front(void)
 	assert(!strcmp(lst->next->next->next->data, "[1]: Second line...\n"));
 	printf(LGREEN"+"NOC);
 	assert(!strcmp(lst->next->next->next->next->data, "[0]: First line...\n"));
+	printf(LGREEN"+"NOC"\n");
+	free(lst->next->next->next->next);
+	free(lst->next->next->next);
+	free(lst->next->next);
+	free(lst->next);
+	free(lst);
+}
+
+void	test_ft_list_size(void)
+{
+	t_list	*lst = NULL;
+
+	printf("\nft_list_size, functional tests:\n");
+	assert(ft_list_size(lst) == 0);
+	printf(LGREEN"+"NOC);
+	ft_list_push_front(&lst, "[0]: First line...\n");
+	assert(ft_list_size(lst) == 1);
+	printf(LGREEN"+"NOC);
+	ft_list_push_front(&lst, "[1]: Second line...\n");
+	assert(ft_list_size(lst) == 2);
+	printf(LGREEN"+"NOC);
+	ft_list_push_front(&lst, "[2]: Third line...\n");
+	assert(ft_list_size(lst) == 3);
+	printf(LGREEN"+"NOC);
+	ft_list_push_front(&lst, "[3]: Fourth line...\n");
+	assert(ft_list_size(lst) == 4);
+	printf(LGREEN"+"NOC);
+	ft_list_push_front(&lst, "[4]: Fifth line...\n");
+	assert(ft_list_size(lst) == 5);
 	printf(LGREEN"+"NOC"\n");
 	free(lst->next->next->next->next);
 	free(lst->next->next->next);
