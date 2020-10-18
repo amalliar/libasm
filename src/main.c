@@ -6,7 +6,7 @@
 /*   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 22:06:40 by amalliar          #+#    #+#             */
-/*   Updated: 2020/10/17 09:48:30 by amalliar         ###   ########.fr       */
+/*   Updated: 2020/10/18 06:52:08 by amalliar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,9 +306,16 @@ void	test_ft_atoi_base(void)
 	printf(LGREEN"+"NOC);
 	assert(ft_atoi_base("101", "01-") == 0);
 	printf(LGREEN"+"NOC);
+	/* test overflow handling */
+	assert(ft_atoi_base("2147483647", "0123456789") == 2147483647);
+	printf(LGREEN"+"NOC);
 	assert(ft_atoi_base("2147483648", "0123456789") == 0);
 	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("-2147483648", "0123456789") == -2147483648);
+	printf(LGREEN"+"NOC);
 	assert(ft_atoi_base("-2147483649", "0123456789") == 0);
+	printf(LGREEN"+"NOC);
+	assert(ft_atoi_base("10000000000000000", "0123456789abcdef") == 0);
 	printf(LGREEN"+"NOC);
 	printf("\nft_atoi_base, random tests:\n");
 	if (!(buff = malloc(64)))

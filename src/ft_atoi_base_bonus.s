@@ -6,7 +6,7 @@
 ;;   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        ;;
 ;;                                                +#+#+#+#+#+   +#+           ;;
 ;;   Created: 2020/10/16 02:26:05 by amalliar          #+#    #+#             ;;
-;;   Updated: 2020/10/17 06:26:15 by amalliar         ###   ########.fr       ;;
+;;   Updated: 2020/10/18 06:56:59 by amalliar         ###   ########.fr       ;;
 ;;                                                                            ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
 
@@ -80,7 +80,7 @@ _ft_atoi_base:
 
 	mov	rdi, rsi		; we need the length of the base
 	call	_ft_strlen
-	mov	r12d, eax		; r12d will hold the value of radix
+	mov	r12, rax		; r12 will hold the value of radix
 	mov	rdi, [rsp + 40]		; restore rdi after the call
 	xor	r13, r13		; string index
 	xor	r14, r14		; the resulting number is stored in r14d (4 byte int)
@@ -106,8 +106,8 @@ _ft_atoi_base:
 	; CORE PART OF THE CONVERSION:
 	; nbr = nbr * radix + (ft_strchr(base, *str) - base);
 
-	imul	r14d, r12d		; first, multiply number by radix
-	jo	.error			; overflow of 4 byte integer
+	imul	r14, r12		; first, multiply number by radix
+	jo	.error			; overflow of 8 byte integer
 
 	mov	rdi, rsi		; first argument to ft_strchr
 	mov	sil, r15b		; second argument to ft_strchr  
@@ -118,14 +118,21 @@ _ft_atoi_base:
 	mov	rdi, [rsp + 40]		; restore rdi
 	mov	rsi, [rsp + 32]		; restore rsi
 	sub	rax, rsi		; current digit is ft_strchr(base, *str) - base
-	add	r14d, eax		; add current digit to the resulting number
-	jo	.error			; overflow of 4 byte integer
+	add	r14, rax		; add current digit to the resulting number
+	jo	.error			; overflow of 8 byte integer
 
 	inc	r13			; increment string index
 	jmp	.loop
 .break:
-	imul	r14d, ebp		; multiply nbr with sign
-	jno	.done			; if result does not overflow, return it
+	mov	r13, 2147483648		; cmp doesn't work with 64 bit immed
+	cmp	r14, r13		; check for possible integer overflow
+	ja	.error			; nbr won't fit in a 4 byte int
+	jb	.no_overflow		; anything less will fit in either positive or negative form
+	cmp	rbp, -1
+	jne	.error			; only a negative number can hold an abs value of 2147483648
+.no_overflow:
+	imul	r14, rbp		; multiply nbr with sign
+	jmp	.done			; and return it
 .error:
 	xor	r14, r14		; on error function returns 0
 .done:

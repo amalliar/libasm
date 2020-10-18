@@ -6,7 +6,7 @@
 ;;   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        ;;
 ;;                                                +#+#+#+#+#+   +#+           ;;
 ;;   Created: 2020/10/17 08:58:55 by amalliar          #+#    #+#             ;;
-;;   Updated: 2020/10/17 09:22:17 by amalliar         ###   ########.fr       ;;
+;;   Updated: 2020/10/18 06:54:28 by amalliar         ###   ########.fr       ;;
 ;;                                                                            ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
 
@@ -23,6 +23,6 @@ _ft_create_elem:
 
 	mov	qword [rax], rdi	; elem->data = data
 	mov	qword [rax + 8], 0	; elem->next = NULL
-.done
+.done:
 	ret
 	
