@@ -6,7 +6,7 @@
 /*   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 22:06:40 by amalliar          #+#    #+#             */
-/*   Updated: 2020/10/18 06:52:08 by amalliar         ###   ########.fr       */
+/*   Updated: 2020/10/19 14:24:14 by amalliar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	test_ft_strisunique(void);
 void	test_ft_atoi_base(void);
 void	test_ft_list_push_front(void);
 void	test_ft_list_size(void);
+void	test_ft_list_sort(void);
 
 int		main(void)
 {
@@ -51,6 +52,7 @@ int		main(void)
 	test_ft_atoi_base();
 	test_ft_list_push_front();
 	test_ft_list_size();
+	test_ft_list_sort();
 #endif
 
 	return (0);
@@ -395,6 +397,44 @@ void	test_ft_list_size(void)
 	free(lst->next->next);
 	free(lst->next);
 	free(lst);
+}
+
+void	test_ft_list_sort(void)
+{
+	t_list	*lst = NULL;
+	t_list	*elem;
+	char	**words;
+
+	if (!(words = malloc(10000 * sizeof(char *))))
+		exit(EXIT_FAILURE);
+	for (int i = 0; i < 10000; ++i)
+		if (!(words[i] = malloc(64)))
+			exit(EXIT_FAILURE);
+	printf("\nft_list_sort, random tests:\n");
+	for (int i = 0; i < 80; ++i)
+	{
+		for (int i = 0; i < 10000; ++i)
+		{
+			gen_cstring(words[i], 64);
+			ft_list_push_front(&lst, words[i]);
+		}
+		ft_list_sort(&lst, strcmp);
+		for (int i = 0; i < 9999; ++i)
+		{
+			elem = lst;
+			lst = lst->next;
+			assert(strcmp(elem->data, lst->data) <= 0);
+			free(elem);
+		}
+		assert(lst->next == NULL);
+		free(lst);
+		lst = NULL;
+		printf(LGREEN"+"NOC);
+	}
+	printf("\n");
+	for (int i = 0; i < 10000; ++i)
+		free(words[i]);
+	free(words);
 }
 
 #endif

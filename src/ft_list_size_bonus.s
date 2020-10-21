@@ -6,7 +6,7 @@
 ;;   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        ;;
 ;;                                                +#+#+#+#+#+   +#+           ;;
 ;;   Created: 2020/10/17 09:31:13 by amalliar          #+#    #+#             ;;
-;;   Updated: 2020/10/17 09:43:35 by amalliar         ###   ########.fr       ;;
+;;   Updated: 2020/10/21 09:34:22 by amalliar         ###   ########.fr       ;;
 ;;                                                                            ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
 
@@ -16,7 +16,7 @@ _ft_list_size:
 	xor	rax, rax		; count = 0
 	test	rdi, rdi
 	jz	.done			; begin_list == NULL
-	
+
 	mov	rdx, rdi		; move rdi to rdx to avoid unnecessary save/restore
 .loop:
 	inc	rax			; ++count
