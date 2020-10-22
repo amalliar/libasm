@@ -6,7 +6,7 @@
 #    By: amalliar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/09 23:55:29 by amalliar          #+#    #+#              #
-#    Updated: 2020/10/21 09:40:07 by amalliar         ###   ########.fr        #
+#    Updated: 2020/10/22 15:45:28 by amalliar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,12 +28,13 @@ SRCS       := src/ft_strlen.s \
               src/ft_strdup.s
 OBJS       := $(SRCS:$(SRCDIR)/%.s=$(OBJDIR)/%.o)
 BSRCS      := src/ft_strchr_bonus.s \
-              src/ft_strisunique_bonus.s \
+              src/ft_strisnonrepeat_bonus.s \
               src/ft_atoi_base_bonus.s \
               src/ft_create_elem_bonus.s \
               src/ft_list_push_front_bonus.s \
               src/ft_list_size_bonus.s \
-              src/ft_list_sort_bonus.s
+              src/ft_list_sort_bonus.s \
+              src/ft_list_remove_if_bonus.s
 BOBJS      := $(BSRCS:$(SRCDIR)/%.s=$(OBJDIR)/%.o)
 
 # Run multiple threads.
@@ -82,18 +83,26 @@ test: $(NAME)
 	@$(CC) $(CFLAGS) $(INCLUDE) src/main.c -L. -lasm -o test
 	@echo "Built target test"
 	@echo "> start\n"
-	@./test && echo "\n> done"
+	@./test &
+	@sleep 1
+	@leaks test
+	@killall test
+	@echo "> done"
 	@rm -f test
 .PHONY: test
 
 btest: $(NAME)
 	@$(MAKE) bonus MAKEFLAGS=
 	@echo "$(LGREEN)Building test executable...$(NOC)"
-	@$(CC) $(CFLAGS) $(INCLUDE) -D TEST_BONUS_PART src/main.c -L. -lasm -o test
-	@echo "Built target test"
+	@$(CC) $(CFLAGS) $(INCLUDE) -D TEST_BONUS_PART src/main.c -L. -lasm -o btest
+	@echo "Built target btest"
 	@echo "> start\n"
-	@./test && echo "\n> done"
-	@rm -f test
+	@./btest &
+	@sleep 2
+	@leaks btest
+	@killall btest
+	@echo "> done"
+	@rm -f btest
 .PHONY: btest
 
 help:

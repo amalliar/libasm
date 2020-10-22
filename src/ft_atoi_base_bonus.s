@@ -6,13 +6,13 @@
 ;;   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        ;;
 ;;                                                +#+#+#+#+#+   +#+           ;;
 ;;   Created: 2020/10/16 02:26:05 by amalliar          #+#    #+#             ;;
-;;   Updated: 2020/10/18 06:56:59 by amalliar         ###   ########.fr       ;;
+;;   Updated: 2020/10/22 15:42:48 by amalliar         ###   ########.fr       ;;
 ;;                                                                            ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
 
 	section	.text
 	extern	_ft_strchr
-	extern	_ft_strisunique
+	extern	_ft_strisnonrepeat
 args_are_valid:
 	sub	rsp, 24			; allocate space for locals + realign rsp
 	mov	[rsp], rdi		; save nonvolatile register
@@ -44,9 +44,7 @@ args_are_valid:
 	test	rax, rax		; check if base contains '-'
 	jnz	.error
 
-	call	_ft_strisunique
-	test	rax, rax		; check if base contains repeating characters
-	jz	.error
+	call	_ft_strisnonrepeat	; check if base contains repeating characters
 	jmp	.done
 .error:
 	xor	rax, rax

@@ -6,7 +6,7 @@
 /*   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 22:06:40 by amalliar          #+#    #+#             */
-/*   Updated: 2020/10/19 14:24:14 by amalliar         ###   ########.fr       */
+/*   Updated: 2020/10/22 15:57:35 by amalliar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,11 @@ void	test_ft_write(void);
 void	test_ft_read(void);
 void	test_ft_strdup(void);
 void	test_ft_strchr(void);
-void	test_ft_strisunique(void);
+void	test_ft_strisnonrepeat(void);
 void	test_ft_atoi_base(void);
 void	test_ft_list_push_front(void);
 void	test_ft_list_size(void);
+void	test_ft_list_remove_if(void);
 void	test_ft_list_sort(void);
 
 int		main(void)
@@ -48,10 +49,11 @@ int		main(void)
 
 #ifdef TEST_BONUS_PART
 	test_ft_strchr();
-	test_ft_strisunique();
+	test_ft_strisnonrepeat();
 	test_ft_atoi_base();
 	test_ft_list_push_front();
 	test_ft_list_size();
+	test_ft_list_remove_if();
 	test_ft_list_sort();
 #endif
 
@@ -75,8 +77,10 @@ void	test_ft_strlen(void)
 	}
 	free(buff);
 	printf("\nft_strlen, corner cases:\n");
+
 	assert(strlen("") == ft_strlen(""));
 	printf(LGREEN"+"NOC);
+
 	assert(strlen("1") == ft_strlen("1"));
 	printf(LGREEN"+"NOC"\n");
 }
@@ -112,18 +116,21 @@ void	test_ft_strcpy(void)
 	}
 	free(src);
 	printf("\nft_strcpy, corner cases:\n");
+
 	memset(dest1, 'f', 256);
 	memset(dest2, 'f', 256);
 	strcpy(dest1 + 10, "A");
 	ft_strcpy(dest2 + 10, "A");
 	assert(!memcmp(dest1, dest2, 256));
 	printf(LGREEN"+"NOC);
+
 	memset(dest1, 'f', 256);
 	memset(dest2, 'f', 256);
 	strcpy(dest1 + 10, "");
 	ft_strcpy(dest2 + 10, "");
 	assert(!memcmp(dest1, dest2, 256));
 	printf(LGREEN"+"NOC"\n");
+
 	free(dest1);
 	free(dest2);
 }
@@ -146,10 +153,13 @@ void	test_ft_strcmp(void)
 	free(str1);
 	free(str2);
 	printf("\nft_strcmp, corner cases:\n");
+
 	assert(strcmp("", "") == ft_strcmp("", ""));
 	printf(LGREEN"+"NOC);
+
 	assert((strcmp("1", "") > 0) && (ft_strcmp("1", "") > 0));
 	printf(LGREEN"+"NOC);
+
 	assert((strcmp("", "1") < 0) && (ft_strcmp("", "1") < 0));
 	printf(LGREEN"+"NOC"\n");
 }
@@ -161,18 +171,31 @@ void	test_ft_write(void)
 	ssize_t		slen;
 
 	printf("\nft_write, functional tests:\n");
+
 	slen = sizeof("This string is written to stdout.\n");
 	assert(ft_write(STDOUT_FILENO, "This string is written to stdout.\n", slen) == slen);
+	printf(LGREEN"+"NOC);
+
 	assert(ft_write(STDERR_FILENO, "This string is written to stderr.\n", slen) == slen);
+	printf(LGREEN"+"NOC);
+
 	slen = sizeof("");
 	assert(ft_write(STDOUT_FILENO, "", slen) == slen);
-	printf(LGREEN"+++"NOC"\n");
-	printf("ft_write, error handling:\n");
+	printf(LGREEN"+"NOC);
+
+	printf("\nft_write, error handling:\n");
 	write(255, "test", 4);
 	old_errno = errno;
 	errno = 0;
 	assert(ft_write(255, "test", 4) == -1 && errno == old_errno);
 	printf(LGREEN"+"NOC);
+
+	write(STDOUT_FILENO, NULL, 4);
+	old_errno = errno;
+	errno = 0;
+	assert(ft_write(STDOUT_FILENO, NULL, 4) == -1 && errno == old_errno);
+	printf(LGREEN"+"NOC);
+
 	if (!(fd = open("./src/test.c", O_RDONLY)))
 		exit(EXIT_FAILURE);
 	write(fd, "test", 4);
@@ -180,6 +203,7 @@ void	test_ft_write(void)
 	errno = 0;
 	assert(ft_write(fd, "test", 4) == -1 && errno == old_errno);
 	printf(LGREEN"+"NOC"\n");
+
 	close(fd);
 }
 
@@ -201,14 +225,22 @@ void	test_ft_read(void)
 		assert(!memcmp(buff1, buff2, 128));
 		printf(LGREEN"+"NOC);
 	}
-	close(fd1);
-	close(fd2);
 	printf("\nft_read, error handling:\n");
+
 	read(255, buff1, 4);
 	old_errno = errno;
 	errno = 0;
 	assert(ft_read(255, buff2, 4) == -1 && errno == old_errno);
 	printf(LGREEN"+"NOC);
+
+	read(fd1, NULL, 4);
+	old_errno = errno;
+	errno = 0;
+	assert(ft_read(fd2, NULL, 4) == -1 && errno == old_errno);
+	printf(LGREEN"+"NOC);
+
+	close(fd1);
+	close(fd2);
 	if (!(fd1 = open("./src/test.c", O_WRONLY)))
 		exit(EXIT_FAILURE);
 	read(fd1, buff1, 4);
@@ -216,6 +248,7 @@ void	test_ft_read(void)
 	errno = 0;
 	assert(ft_read(fd1, buff2, 4) == -1 && errno == old_errno);
 	printf(LGREEN"+"NOC"\n");
+
 	close(fd1);
 	free(buff1);
 	free(buff2);
@@ -237,7 +270,16 @@ void	test_ft_strdup(void)
 		free(copy);
 		printf(LGREEN"+"NOC);
 	}
-	printf("\n");
+	free(src);
+	printf("\nft_strdup, corner cases:\n");
+
+	copy = ft_strdup("");
+	assert(!strcmp("", copy));
+	free(copy);
+	printf(LGREEN"+"NOC"\n\n");
+#ifndef TEST_BONUS_PART
+	sleep(1000);
+#endif
 }
 
 #ifdef TEST_BONUS_PART
@@ -249,7 +291,7 @@ void	test_ft_strchr(void)
 
 	if (!(str = malloc(256)))
 		exit(EXIT_FAILURE);
-	printf("\nft_strchr, random tests:\n");
+	printf("ft_strchr, random tests:\n");
 	for (int i = 0; i < 80; ++i)
 	{
 		c = rand() % 256;
@@ -259,28 +301,37 @@ void	test_ft_strchr(void)
 	}
 	free(str);
 	printf("\nft_strchr, null-terminator test:\n");
+
 	assert(strchr("just some text...", 0) == ft_strchr("just some text...", 0));
 	printf(LGREEN"+"NOC"\n");
 }
 
-void	test_ft_strisunique(void)
+void	test_ft_strisnonrepeat(void)
 {
-	printf("\nft_strisunique, functional tests:\n");
-	assert(ft_strisunique("abcdefghijkl") == 1);
+	printf("\nft_strisnonrepeat, functional tests:\n");
+
+	assert(ft_strisnonrepeat("0123456789abcdefghijklmnopqrstuvwxyz") == 1);
 	printf(LGREEN"+"NOC);
-	assert(ft_strisunique("") == 1);
+
+	assert(ft_strisnonrepeat("") == 1);
 	printf(LGREEN"+"NOC);
-	assert(ft_strisunique("aAbBcC") == 1);
+
+	assert(ft_strisnonrepeat("aAbBcC") == 1);
 	printf(LGREEN"+"NOC);
-	assert(ft_strisunique("abcida") == 0);
+
+	assert(ft_strisnonrepeat("abcida") == 0);
 	printf(LGREEN"+"NOC);
-	assert(ft_strisunique("albÿiw") == 1);
+
+	assert(ft_strisnonrepeat("albÿiw") == 1);
 	printf(LGREEN"+"NOC);
-	assert(ft_strisunique("albÿiwÿ") == 0);
+
+	assert(ft_strisnonrepeat("albÿiwÿ") == 0);
 	printf(LGREEN"+"NOC);
-	assert(ft_strisunique("aldiwkÿsdÿ") == 0);
+
+	assert(ft_strisnonrepeat("aldiwkÿsdÿ") == 0);
 	printf(LGREEN"+"NOC);
-	assert(ft_strisunique("\t‰~þ") == 1);
+
+	assert(ft_strisnonrepeat("\t‰~þ") == 1);
 	printf(LGREEN"+"NOC"\n");
 }
 
@@ -294,31 +345,44 @@ void	test_ft_atoi_base(void)
 	char	*base16 = "0123456789abcdef";
 
 	printf("\nft_atoi_base, error handling:\n");
+
 	assert(ft_atoi_base("", "0123456789") == 0);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("255", "") == 0);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("255", "2") == 0);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("1012", "01") == 0);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("101", "001") == 0);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("101", "01+") == 0);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("101", "01-") == 0);
 	printf(LGREEN"+"NOC);
+
 	/* test overflow handling */
 	assert(ft_atoi_base("2147483647", "0123456789") == 2147483647);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("2147483648", "0123456789") == 0);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("-2147483648", "0123456789") == -2147483648);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("-2147483649", "0123456789") == 0);
 	printf(LGREEN"+"NOC);
+
 	assert(ft_atoi_base("10000000000000000", "0123456789abcdef") == 0);
 	printf(LGREEN"+"NOC);
+
 	printf("\nft_atoi_base, random tests:\n");
 	if (!(buff = malloc(64)))
 		exit(EXIT_FAILURE);
@@ -339,8 +403,15 @@ void	test_ft_atoi_base(void)
 			assert(ft_atoi_base(buff, base16) == num);
 		printf(LGREEN"+"NOC);
 	}
-	printf("\n");
 	free(buff);
+	printf("\nft_atoi_base, corner cases:\n");
+
+	assert(ft_atoi_base("101010", "01") == 42);
+	printf(LGREEN"+"NOC);
+
+	/* 36^4 * 17 + 36^3 * 10 + 36^2 * 33 + 27 == 29062827 */
+	assert(ft_atoi_base("hax0r", "0123456789abcdefghijklmnopqrstuvwxyz") == 29062827);
+	printf(LGREEN"+"NOC"\n");
 }
 
 void	test_ft_list_push_front(void)
@@ -353,16 +424,22 @@ void	test_ft_list_push_front(void)
 	ft_list_push_front(&lst, "[2]: Third line...\n");
 	ft_list_push_front(&lst, "[3]: Fourth line...\n");
 	ft_list_push_front(&lst, "[4]: Fifth line...\n");
+
 	assert(!strcmp(lst->data, "[4]: Fifth line...\n"));
 	printf(LGREEN"+"NOC);
+
 	assert(!strcmp(lst->next->data, "[3]: Fourth line...\n"));
 	printf(LGREEN"+"NOC);
+
 	assert(!strcmp(lst->next->next->data, "[2]: Third line...\n"));
 	printf(LGREEN"+"NOC);
+
 	assert(!strcmp(lst->next->next->next->data, "[1]: Second line...\n"));
 	printf(LGREEN"+"NOC);
+
 	assert(!strcmp(lst->next->next->next->next->data, "[0]: First line...\n"));
 	printf(LGREEN"+"NOC"\n");
+
 	free(lst->next->next->next->next);
 	free(lst->next->next->next);
 	free(lst->next->next);
@@ -375,28 +452,79 @@ void	test_ft_list_size(void)
 	t_list	*lst = NULL;
 
 	printf("\nft_list_size, functional tests:\n");
+
 	assert(ft_list_size(lst) == 0);
 	printf(LGREEN"+"NOC);
+
 	ft_list_push_front(&lst, "[0]: First line...\n");
 	assert(ft_list_size(lst) == 1);
 	printf(LGREEN"+"NOC);
+
 	ft_list_push_front(&lst, "[1]: Second line...\n");
 	assert(ft_list_size(lst) == 2);
 	printf(LGREEN"+"NOC);
+
 	ft_list_push_front(&lst, "[2]: Third line...\n");
 	assert(ft_list_size(lst) == 3);
 	printf(LGREEN"+"NOC);
+
 	ft_list_push_front(&lst, "[3]: Fourth line...\n");
 	assert(ft_list_size(lst) == 4);
 	printf(LGREEN"+"NOC);
+
 	ft_list_push_front(&lst, "[4]: Fifth line...\n");
 	assert(ft_list_size(lst) == 5);
 	printf(LGREEN"+"NOC"\n");
+
 	free(lst->next->next->next->next);
 	free(lst->next->next->next);
 	free(lst->next->next);
 	free(lst->next);
 	free(lst);
+}
+
+void	test_ft_list_remove_if(void)
+{
+	t_list	*lst = NULL;
+	t_list	*elem;
+	int		rnd;
+	int		num_keys;
+	char	*key = "1d31ada14d17cc57124ea357b85496878304617d";
+	char	**words;
+
+	if (!(words = malloc(10000 * sizeof(char *))))
+		exit(EXIT_FAILURE);
+	for (int i = 0; i < 10000; ++i)
+		if (!(words[i] = malloc(64)))
+			exit(EXIT_FAILURE);
+	printf("\nft_list_remove_if, random tests:\n");
+	for (int i = 0; i < 80; ++i)
+	{
+		num_keys = 0;
+		for (int j = 0; j < 10000; ++j)
+		{
+			rnd = rand();
+			if (rnd % 10000)
+				gen_cstring(words[j], 64);
+			else
+				++num_keys;
+			ft_list_push_front(&lst, (rnd % 10000) ? words[j] : key);
+		}
+		ft_list_remove_if(&lst, key, strcmp);
+		for (int j = 0; j < 10000 - num_keys; ++j)
+		{
+			elem = lst;
+			lst = lst->next;
+			assert(strcmp(elem->data, key));
+			free(elem);
+		}
+		assert(lst == NULL);
+		printf(LGREEN"+"NOC);
+	}
+	printf("\n");
+	for (int i = 0; i < 10000; ++i)
+		free(words[i]);
+	free(words);
 }
 
 void	test_ft_list_sort(void)
@@ -413,13 +541,13 @@ void	test_ft_list_sort(void)
 	printf("\nft_list_sort, random tests:\n");
 	for (int i = 0; i < 80; ++i)
 	{
-		for (int i = 0; i < 10000; ++i)
+		for (int j = 0; j < 10000; ++j)
 		{
-			gen_cstring(words[i], 64);
-			ft_list_push_front(&lst, words[i]);
+			gen_cstring(words[j], 64);
+			ft_list_push_front(&lst, words[j]);
 		}
 		ft_list_sort(&lst, strcmp);
-		for (int i = 0; i < 9999; ++i)
+		for (int j = 0; j < 9999; ++j)
 		{
 			elem = lst;
 			lst = lst->next;
@@ -431,10 +559,11 @@ void	test_ft_list_sort(void)
 		lst = NULL;
 		printf(LGREEN"+"NOC);
 	}
-	printf("\n");
+	printf("\n\n");
 	for (int i = 0; i < 10000; ++i)
 		free(words[i]);
 	free(words);
+	sleep(1000);
 }
 
 #endif
