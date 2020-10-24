@@ -6,22 +6,21 @@
 ;;   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        ;;
 ;;                                                +#+#+#+#+#+   +#+           ;;
 ;;   Created: 2020/10/17 09:31:13 by amalliar          #+#    #+#             ;;
-;;   Updated: 2020/10/21 09:34:22 by amalliar         ###   ########.fr       ;;
+;;   Updated: 2020/10/23 19:43:05 by amalliar         ###   ########.fr       ;;
 ;;                                                                            ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
 
 	section	.text
+	; int	ft_list_size(t_list *begin_list);
 	global	_ft_list_size
 _ft_list_size:
-	xor	rax, rax		; count = 0
+	xor	rax, rax		; count = 0;
 	test	rdi, rdi
-	jz	.done			; begin_list == NULL
-
-	mov	rdx, rdi		; move rdi to rdx to avoid unnecessary save/restore
+	jz	.done			; if (!begin_list)
 .loop:
-	inc	rax			; ++count
-	mov	rdx, [rdx + 8]		; lst = lst->next
-	test	rdx, rdx
+	inc	rax			; ++count;
+	mov	rdi, [rdi + 8]		; lst = lst->next;
+	test	rdi, rdi
 	jnz	.loop			; while (lst != NULL)
 .done:
 	ret

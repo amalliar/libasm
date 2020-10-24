@@ -6,11 +6,12 @@
 ;;   By: amalliar <marvin@42.fr>                    +#+  +:+       +#+        ;;
 ;;                                                +#+#+#+#+#+   +#+           ;;
 ;;   Created: 2020/10/17 08:20:03 by amalliar          #+#    #+#             ;;
-;;   Updated: 2020/10/17 08:58:10 by amalliar         ###   ########.fr       ;;
+;;   Updated: 2020/10/23 18:33:30 by amalliar         ###   ########.fr       ;;
 ;;                                                                            ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
 
 	section	.text
+	; void	ft_list_push_front(t_list **begin_list, void *data);
 	global	_ft_list_push_front
 	extern	_ft_create_elem
 _ft_list_push_front:

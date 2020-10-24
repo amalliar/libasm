@@ -6,13 +6,13 @@
 #    By: amalliar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/09 23:55:29 by amalliar          #+#    #+#              #
-#    Updated: 2020/10/22 15:45:28 by amalliar         ###   ########.fr        #
+#    Updated: 2020/10/24 10:42:01 by amalliar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SHELL      := /bin/sh
 CC         := clang
-ASM        := nasm
+ASM        := nasm -Wall
 CFLAGS     := -Wall -Wextra -fdiagnostics-color -g -pipe
 INCLUDE    := -I./include
 AR         := ar -rcs
@@ -85,7 +85,7 @@ test: $(NAME)
 	@echo "> start\n"
 	@./test &
 	@sleep 1
-	@leaks test
+	@-leaks test
 	@killall test
 	@echo "> done"
 	@rm -f test
@@ -99,7 +99,7 @@ btest: $(NAME)
 	@echo "> start\n"
 	@./btest &
 	@sleep 2
-	@leaks btest
+	@-leaks btest
 	@killall btest
 	@echo "> done"
 	@rm -f btest
