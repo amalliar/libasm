@@ -6,7 +6,7 @@
 #    By: amalliar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/09 23:55:29 by amalliar          #+#    #+#              #
-#    Updated: 2020/10/24 10:42:01 by amalliar         ###   ########.fr        #
+#    Updated: 2021/09/22 19:42:12 by amalliar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,15 +47,15 @@ NOC        := \033[0m
 
 all: $(NAME)
 $(NAME): $(OBJS)
-	@echo "$(LGREEN)Linking static library $(NAME)$(NOC)"
+	@echo -e "$(LGREEN)Linking static library $(NAME)$(NOC)"
 	@$(AR) $@ $?
-	@echo "Built target $(NAME)"
+	@echo -e "Built target $(NAME)"
 .PHONY: all
 
 bonus: $(NAME) $(BOBJS)
-	@echo "$(LGREEN)Adding bonus functions...$(NOC)"
+	@echo -e "$(LGREEN)Adding bonus functions...$(NOC)"
 	@$(AR) -u $(NAME) $(BOBJS)
-	@echo "Updated target $(NAME)"
+	@echo -e "Updated target $(NAME)"
 .PHONY: bonus
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.s | $(OBJDIR)
@@ -64,12 +64,12 @@ $(OBJDIR):
 	@mkdir -p $(OBJDIR)
 
 clean:
-	@echo "$(WHITE)Removing object files...$(NOC)"
+	@echo -e "$(WHITE)Removing object files...$(NOC)"
 	@-rm -rf $(OBJDIR)
 .PHONY: clean
 
 fclean: clean
-	@echo "$(WHITE)Removing static library $(NAME)$(NOC)"
+	@echo -e "$(WHITE)Removing static library $(NAME)$(NOC)"
 	@-rm -f $(NAME)
 .PHONY: fclean
 
@@ -79,38 +79,38 @@ re:
 .PHONY: re
 
 test: $(NAME)
-	@echo "$(LGREEN)Building test executable...$(NOC)"
+	@echo -e "$(LGREEN)Building test executable...$(NOC)"
 	@$(CC) $(CFLAGS) $(INCLUDE) src/main.c -L. -lasm -o test
-	@echo "Built target test"
-	@echo "> start\n"
+	@echo -e "Built target test"
+	@echo -e "> start\n"
 	@./test &
 	@sleep 1
 	@-leaks test
 	@killall test
-	@echo "> done"
+	@echo -e "> done"
 	@rm -f test
 .PHONY: test
 
 btest: $(NAME)
 	@$(MAKE) bonus MAKEFLAGS=
-	@echo "$(LGREEN)Building test executable...$(NOC)"
+	@echo -e "$(LGREEN)Building test executable...$(NOC)"
 	@$(CC) $(CFLAGS) $(INCLUDE) -D TEST_BONUS_PART src/main.c -L. -lasm -o btest
-	@echo "Built target btest"
-	@echo "> start\n"
+	@echo -e "Built target btest"
+	@echo -e "> start\n"
 	@./btest &
 	@sleep 2
 	@-leaks btest
 	@killall btest
-	@echo "> done"
+	@echo -e "> done"
 	@rm -f btest
 .PHONY: btest
 
 help:
-	@echo "The following are some of the valid targets for this Makefile:"
-	@echo "... all (the default if no target is provided)"
-	@echo "... clean"
-	@echo "... fclean"
-	@echo "... re"
-	@echo "... test"
-	@echo "... btest"
+	@echo -e "The following are some of the valid targets for this Makefile:"
+	@echo -e "... all (the default if no target is provided)"
+	@echo -e "... clean"
+	@echo -e "... fclean"
+	@echo -e "... re"
+	@echo -e "... test"
+	@echo -e "... btest"
 .PHONY: help
